@@ -50,9 +50,13 @@ const updateRecipe = (req, res) => { // ---------- send email if user's fav reci
               }
             });
           }
-          res.status(201).send(success);
+          res.status(201).send({
+            message: 'recipe updated'
+          });
         }
-        res.status(201).send(success);
+        res.status(201).send({
+          message: 'recipe updated'
+        });
       })
       .catch(error => res.status(500).send({
         message: error.errors[0].message
