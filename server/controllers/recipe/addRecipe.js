@@ -15,11 +15,11 @@ const addRecipe = (req, res) => { // -----------------------------create recipe!
     image: req.body.img,
     instructions: req.body.instructions,
     ingredients: req.body.ingredients,
-    userId: decoded.user.id,
+    userId: decoded.user.id
   })
     .then(recipes => res.status(201).send({
       recipe: recipes,
-      message: 'recipe created'
+      message: 'recipe created',
     }))
     .catch(error => res.status(500).send({
       message: error.errors[0].message

@@ -181,7 +181,7 @@ describe('API Integration Tests', () => {
         });
     });
 
-    it('return 400 for wrong email and password', (done) => {
+    it('return 500 for wrong email and password', (done) => {
       const wrongPassword = Object.assign({}, data);
       wrongPassword.password = 'wrongpassword';
       wrongPassword.email = 'wrongpard';
@@ -237,202 +237,134 @@ describe('API Integration Tests', () => {
     });
   })
 
-  // describe('Add Recipe', () => {
-  //   beforeEach(() => {
-  //     data = {
-  //       title: 'Fried Rice',
-  //       description: `Nigerian Fried Rice puts a spicy, flavorful spin on the traditional
-  //            fried rice and is appealing on its own or served with a variety of other African food.`,
-  //       category: 'dessert',
-  //     };
-  //   });
+  describe('Add Recipe', () => {
+    beforeEach(() => {
+      data = {
+        title: 'Fried Rice',
+        description: `Nigerian Fried Rice puts a spicy, flavorful spin on the traditional
+             fried rice and is appealing on its own or served with a variety of other African food.`,
+        category: 'dessertedf',
+        ingredients: 'rice',
+        instructions: 'stir for 5minutes'
+      };
+    });
 
-  //   // check if token is passed
-  //   it('return 40 if token is not present', (done) => {
-  //     request.post(recipesUrl)
-  //       .send(data)
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(401);
-  //         expect(res.body.message).to.equal('you have to be logged in to create recipe');
-  //         done();
-  //       });
-  //   });
+    // check if token is passed
+    it('return 400 if token is not present', (done) => {
+      request.post(recipesUrl)
+        .send(data)
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          expect(res.body.message).to.equal('you have to be logged in to create recipe');
+          done();
+        });
+    });
 
-  //   // test if name is passed when creating a recipe
-  //   it('return 400 if recipe name is not passed', (done) => {
-  //     const noName = Object.assign({}, data);
-  //     noName.title = null;
-  //     request.post(`${recipesUrl}?token=${userToken1}`)
-  //       .send(noName)
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(400);
-  //         expect(res.body.message).to.equal('please fill in the required fields');
-  //         done();
-  //       });
-  //   });
+    // test if name is passed when creating a recipe
+    it('return 500 if recipe title is not passed', (done) => {
+      const noName = Object.assign({}, data);
+      noName.description = null;
+      request.post(`${recipesUrl}?token=${userToken1}`)
+        .send(noName)
+        .end((err, res) => {
+          expect(res.status).to.equal(500);
+          expect(res.body.message).to.equal('description cannot be null');
+          done();
+        });
+    });
 
-  //   it('return 201 if recipe is created', (done) => {
-  //     const data = Object.assign({}, data);
-  //     data.title = 'the first recipe';
-  //     request.post(`${recipesUrl}?token=${userToken1}`)
-  //       .send(data)
-  //       .end((err, res) => {
-  //         recipeId = res.body.recipe.id;
-  //         expect(res.status).to.equal(201);
-  //         expect(res.body.message).to.equal('recipe created');
-  //         done();
-  //       });
-  //   });
+    it('return 500 if recipe title is less than 3 char', (done) => {
+      const noName = Object.assign({}, data);
+      noName.title = 'ab';
+      request.post(`${recipesUrl}?token=${userToken1}`)
+        .send(noName)
+        .end((err, res) => {
+          expect(res.status).to.equal(500);
+          expect(res.body.message).to.equal('tile must start with a letter and be at least 3 characters.');
+          done();
+        });
+    });
 
-  //   it('return 201 if recipe is created', (done) => {
-  //     const data = Object.assign({}, data);
-  //     data.title = 'the second recipe';
-  //     request.post(`${recipesUrl}?token=${userToken2}`)
-  //       .send(data)
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(201);
-  //         expect(res.body.message).to.equal('recipe created');
-  //         done();
-  //       });
-  //   });
-  // });
+    it('return 400 if recipe title is contains numbers', (done) => {
+      const noName = Object.assign({}, data);
+      noName.title = 'hellloo45';
+      request.post(`${recipesUrl}?token=${userToken1}`)
+        .send(noName)
+        .end((err, res) => {
+          expect(res.status).to.equal(500);
+          expect(res.body.message).to.equal('only alphabets are allowed for the title');
+          done();
+        });
+    });
 
-  // describe('Add favorite Recipe', () => {
-  //   it('return 201 if successfully added to favorites', (done) => {
-  //     request.post(`${recipesUrl}/${recipeId}/fav`)
-  //       .send({ token: userToken1 })
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(201);
-  //         expect(res.body.message).to.equal('successfully added to favorites');
-  //         done();
-  //       });
-  //   });
-
-  //   it('return 201 if another user tries to favorite', (done) => {
-  //     request.post(`${recipesUrl}/${recipeId}/fav`)
-  //       .send({ token: userToken2 })
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(201);
-  //         expect(res.body.message).to.equal('successfully added to favorites');
-  //         done();
-  //       });
-  //   });
-
-  //   it('return 201 if successfully removed from favorites', (done) => {
-  //     request.post(`${recipesUrl}/${recipeId}/fav`)
-  //       .send({ token: userToken1 })
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(200);
-  //         expect(res.body.message).to.equal('successfully removed from favorites');
-  //         done();
-  //       });
-  //   });
+    it('return 400 if recipe title is contains numbers', (done) => {
+      const noName = Object.assign({}, data);
+      noName.description = 'hel';
+      request.post(`${recipesUrl}?token=${userToken1}`)
+        .send(noName)
+        .end((err, res) => {
+          expect(res.status).to.equal(500);
+          expect(res.body.message).to.equal('description must be atleast 10 characters');
+          done();
+        });
+    });
 
 
-  //   it('return 404 if recipe not found!!', (done) => {
-  //     request.post(`${recipesUrl}/12/fav`)
-  //       .send({ token: userToken1 })
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(404);
-  //         expect(res.body.message).to.equal('recipe not found!');
-  //         done();
-  //       });
-  //   });
-  // });
+    it('return 201 if recipe is created', (done) => {
+      const data = Object.assign({}, data);
+      data.title = 'the first recipe';
+      data.description = 'the first jkkkkkjhggjjrecipe';
+      data.category = 'therecipe';
+      request.post(`${recipesUrl}?token=${userToken1}`)
+        .send(data)
+        .end((err, res) => {
+          recipeId = res.body.recipe.id;
+          expect(res.status).to.equal(201);
+          expect(res.body.message).to.equal('recipe created');
+          done();
+        });
+    });
 
-  // describe('Update Recipes', () => {
-  //   it('return 401 if user not logged in', (done) => {
-  //     request.put(`${recipesUrl}/${recipeId}`)
-  //       .send({ token: userToken2 })
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(401);
-  //         expect(res.body.message).to.equal('Unauthorization error');
-  //         done();
-  //       });
-  //   });
+    it('return 500 if recipe title is null', (done) => {
+      const data = Object.assign({}, data);
+      delete data.title;
+      request.post(`${recipesUrl}?token=${userToken1}`)
+        .send(data)
+        .end((err, res) => {
+          expect(res.status).to.equal(500);
+          expect(res.body.message).to.equal('title cannot be null');
+          done();
+        });
+    });
 
-  //   it('return 404 if recipe is not found', (done) => {
-  //     request.put(`${recipesUrl}/15`)
-  //       .send({ token: userToken1 })
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(404);
-  //         expect(res.body.message).to.equal('recipe Not Found');
-  //         done();
-  //       });
-  //   });
-  // });
+    it('return 500 if recipe category is null', (done) => {
+      const data = Object.assign({}, data);
+      data.title = 'cheese';
+      data.description = "cheesjjjjjje";
+      data.category = 'che';
+      request.post(`${recipesUrl}?token=${userToken1}`)
+        .send(data)
+        .end((err, res) => {
+          expect(res.status).to.equal(500);
+          expect(res.body.message).to.equal('category must be atleast 5 characters');
+          done();
+        });
+    });
 
-  // describe('Send Review', () => {
-  //   it('return 401 if user not logged in', (done) => {
-  //     request.post(`${recipesUrl}/${recipeId}/review`)
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(401);
-  //         expect(res.body.message).to.equal('you have to be logged in');
-  //         done();
-  //       });
-  //   });
-
-  //   it('return 401 content not filled', (done) => {
-  //     request.post(`${recipesUrl}/${recipeId}/review`)
-  //       .send({ title: 'hello', occupation: 'med', token: userToken1 })
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(401);
-  //         expect(res.body.message).to.equal('please fill in the required fields');
-  //         done();
-  //       });
-  //   });
-  //   it('return 200 if review successful', (done) => {
-  //     request.post(`${recipesUrl}/${recipeId}/review`)
-  //       .send({ title: 'hello', content: 'awesome dish', occupation: 'med', token: userToken2 })
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(200);
-  //         expect(res.body.message).to.equal('review sent!');
-  //         done();
-  //       });
-  //   });
-
-  //   it('return 404 if recipe is not found', (done) => {
-  //     request.post(`${recipesUrl}/16/review`)
-  //       .send({ title: 'hello', content: 'awesome dish', occupation: 'med', token: userToken1 })
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(404);
-  //         expect(res.body.message).to.equal('recipe not found');
-  //         done();
-  //       });
-  //   });
-  // });
-
-  // describe('Delete Recipes', () => {
-  //   it('return 401 if user not owner of recipe', (done) => {
-  //     request.delete(`${recipesUrl}/${recipeId}`)
-  //       .send({ token: userToken2 })
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(401);
-  //         expect(res.body.message).to.equal('Not Authorized');
-  //         done();
-  //       });
-  //   });
-
-  //   it('return 404 if recipe is not found', (done) => {
-  //     request.delete(`${recipesUrl}/15`)
-  //       .send({ token: userToken1 })
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(404);
-  //         expect(res.body.message).to.equal('recipe Not Found');
-  //         done();
-  //       });
-  //   });
-
-  //   it('return 404 if recipe deleted', (done) => {
-  //     request.delete(`${recipesUrl}/${recipeId}`)
-  //       .send({ token: userToken1 })
-  //       .end((err, res) => {
-  //         expect(res.status).to.equal(200);
-  //         expect(res.body.message).to.equal('recipe deleted');
-  //         done();
-  //       });
-  //   });
-  // });
+    it('return 500 if recipe category is with spaces', (done) => {
+      const data = Object.assign({}, data);
+      data.title = "cheese";
+      data.description = "cheesoooooooooe";
+      data.category = "dess t$k";
+      request.post(`${recipesUrl}?token=${userToken1}`)
+        .send(data)
+        .end((err, res) => {
+          expect(res.status).to.equal(500);
+          expect(res.body.message).to.equal('category must start with a letter, have no spaces,and be 5 - 15 characters.');
+          done();
+        });
+    });
+  });
 
 });
 

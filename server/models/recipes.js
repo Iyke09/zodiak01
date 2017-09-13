@@ -6,15 +6,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        min: {
-          args: 3,
-          msg: `tile must start with a letter
-            and be at least 3 characters.`
-        },
-        max: {
-          args: 40,
-          msg: `title must start with a letter,
-            and be at less than 40 characters.`
+        len: {
+          args: [3, 25],
+          msg: 'tile must start with a letter and be at least 3 characters.'
         },
         is: {
           args: /^[a-zA-Z_ ]*$/,
@@ -26,15 +20,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        min: {
-          args: 10,
-          msg: `description must start be a letter
-            and be at least 10 characters.`
-        },
-        max: {
-          args: 250,
-          msg: `description must start with a letter, have no spaces,
-            and be at less than 250 characters.`
+        len: {
+          args: [10, 250],
+          msg: 'description must be atleast 10 characters'
         }
       }
     },
@@ -42,20 +30,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        min: {
-          args: 3,
-          msg: `category must start be a letter, have no spaces,
-            and be at least 3 characters.`
-        },
-        max: {
-          args: 10,
-          msg: `category must start with a letter, have no spaces,
-            and be at less than 10 characters.`
+        len: {
+          args: [5, 15],
+          msg: 'category must be atleast 5 characters'
         },
         is: {
           args: /^[A-Za-z][A-Za-z]+$/i,
-          msg: `category must start with a letter, have no spaces,
-            and be 3 - 10 characters.`
+          msg: 'category must start with a letter, have no spaces,and be 5 - 15 characters.'
         }
       }
     },
@@ -66,11 +47,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     ingredients: {
       type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: false,
     },
     instructions: {
       type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: false,
     },
     upvote: DataTypes.INTEGER,
     downvote: DataTypes.INTEGER,
@@ -93,11 +72,6 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'recipeId',
       as: 'check',
     });
-
-    // Recipe.hasMany(models.Favorite, {
-    //   foreignKey: 'recipeId',
-    //   as:'check'
-    // })
   };
 
 
